@@ -2,22 +2,17 @@ import * as Yup from "yup";
 import crypto from "crypto";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+import { sendRegisterMail } from "../utils/sendMail.js";
 
 // @desc    Register a new user
 // @route   POST /users/register
 // @access  Public
 export const registerUser = async (req, res) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email } = req.body;
 
   const schema = Yup.object().shape({
     name: Yup.string().required("Name is a required field"),
     email: Yup.string().required("Email is a required field"),
-    password: Yup.string()
-      .required("Password is a required field")
-      .min(8, "Password must be at least 8 characters"),
-    confirmPassword: Yup.string()
-      .required("Confirm Password is a required field")
-      .oneOf([Yup.ref("password"), null], "Passwords must match"),
   });
 
   try {
@@ -25,8 +20,6 @@ export const registerUser = async (req, res) => {
       {
         name,
         email,
-        password,
-        confirmPassword,
       },
       { abortEarly: false }
     );
@@ -37,17 +30,19 @@ export const registerUser = async (req, res) => {
 
     if (userExists) {
       return res.status(400).json({
-        errors: [{ message: "User with this email already exists!" }],
+        errors: ["User with this email already registered!"],
       });
     }
 
     //generate secretToken for email Validation
     let token = crypto.randomBytes(20);
 
+    let password = crypto.randomBytes(8);
+
     const user = await User.create({
       name,
       email,
-      password,
+      password: password.toString("hex"),
       role: "doctor",
       secretToken: token.toString("hex"),
     });
@@ -60,20 +55,19 @@ export const registerUser = async (req, res) => {
         confirmed: user.confirmed,
         role: user.role,
       },
-      token: generateToken(user._id),
     });
 
-    //TODO: send email to the user
+    sendRegisterMail(email, password.toString("hex"));
   } catch (err) {
     //yup error catch here
     if (err.errors) {
       return res
         .status(400)
-        .json({ errors: [{ message: err.errors || "Validation Error" }] });
+        .json({ errors: [err.errors || "Validation Error"] });
     }
 
     return res.status(500).json({
-      errors: [{ message: "Internal Server Error" }],
+      errors: ["Internal Server Error"],
     });
   }
 };
