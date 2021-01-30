@@ -98,19 +98,19 @@ export const loginUser = async (req, res) => {
 
     if (!user) {
       return res.status(401).json({
-        errors: [{ message: "Invalid email or password !" }],
+        errors: ["Invalid email or password !"],
       });
     }
 
     if (!(await user.matchPassword(password))) {
       return res.status(401).json({
-        errors: [{ message: "Invalid email or password !" }],
+        errors: ["Invalid email or password !"],
       });
     }
 
     if (!user.confirmed) {
       return res.status(400).json({
-        errors: [{ message: "The email is not confirmed !" }],
+        errors: ["The email is not confirmed !"],
       });
     }
 
@@ -131,11 +131,11 @@ export const loginUser = async (req, res) => {
     if (err.errors) {
       return res
         .status(400)
-        .json({ errors: [{ message: err.errors || "Validation Error" }] });
+        .json({ errors: [err.errors || "Validation Error"] });
     }
 
     return res.status(500).json({
-      errors: [{ message: "Internal Server Error" }],
+      errors: ["Internal Server Error"],
     });
   }
 };
