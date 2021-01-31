@@ -1,12 +1,15 @@
 import * as Yup from "yup";
 import crypto from "crypto";
-import User from "../models/userModel.js";
+
 import generateToken from "../utils/generateToken.js";
 import { sendRegisterMail } from "../utils/sendMail.js";
 
+//models imports
+import User from "../models/userModel.js";
+
 // @desc    Register a new user
 // @route   POST /users/register
-// @access  Public
+// @access  Private (Admin)
 export const registerUser = async (req, res) => {
   const { name, email } = req.body;
 
@@ -124,8 +127,6 @@ export const loginUser = async (req, res) => {
       },
       token: generateToken(user._id),
     });
-
-    //TODO: send email to the user
   } catch (err) {
     //yup error catch here
     if (err.errors) {
@@ -134,6 +135,40 @@ export const loginUser = async (req, res) => {
         .json({ errors: [err.errors || "Validation Error"] });
     }
 
+    return res.status(500).json({
+      errors: ["Internal Server Error"],
+    });
+  }
+};
+
+// @desc    Get all Doctors
+// @route   GET /users/doctorList
+// @access  Private (Only access to admin)
+export const doctorList = async (req, res) => {
+  try {
+    let doctors = await User.find({
+      role: "doctor",
+    }).select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
+
+    res.status(200).json(doctors);
+  } catch (err) {
+    return res.status(500).json({
+      errors: ["Internal Server Error"],
+    });
+  }
+};
+
+// @desc    Get User detail by userId
+// @route   GET /users/detail/:userId
+// @access  Public
+export const detailByUserId = async (req, res) => {
+  try {
+    let user = await User.findById(req.params.userId)
+      .populate("profile", ["id", "type", "about", "contact"])
+      .select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
+
+    res.status(200).json(user);
+  } catch (err) {
     return res.status(500).json({
       errors: ["Internal Server Error"],
     });
