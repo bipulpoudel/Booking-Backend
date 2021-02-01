@@ -148,6 +148,7 @@ export const doctorList = async (req, res) => {
   try {
     let doctors = await User.find({
       role: "doctor",
+      confirmed: true,
     }).select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
 
     res.status(200).json(doctors);
