@@ -28,6 +28,10 @@ const userSchema = mongoose.Schema(
     secretToken: {
       type: String,
     },
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "profile",
+    },
   },
   {
     timestamps: true,
