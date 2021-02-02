@@ -23,6 +23,11 @@ const timelineModel = mongoose.Schema(
     saturday: {
       type: Array,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      unique: true,
+    },
   },
   {
     timestamps: true,
