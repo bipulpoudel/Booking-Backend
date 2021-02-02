@@ -29,12 +29,12 @@ export const createProfile = async (req, res) => {
       contact,
       about,
       user: req.params.userId,
+      file: req.file.filename,
     });
 
     await profile.save();
 
     //attach user to profile
-
     let user = await User.findById(req.params.userId);
 
     user.profile = profile._id;
@@ -75,6 +75,10 @@ export const updateProfile = async (req, res) => {
 
     if (about) {
       profile.about = about;
+    }
+
+    if (req.file) {
+      profile.file = req.file.filename;
     }
 
     await profile.save();

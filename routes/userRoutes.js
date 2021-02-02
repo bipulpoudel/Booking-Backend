@@ -9,14 +9,17 @@ import {
   registerUser,
   doctorList,
   detailByUserId,
+  confirmDoctorList,
 } from "../controllers/userController.js";
 
 //auth
 router.route("/register").post(admin, registerUser);
 router.route("/login").post(loginUser);
 
-//doctor list for all confirmed and not confirmed
+//doctor list for admin
 router.route("/doctorList").get(admin, doctorList);
+//doctor list for landing
+router.route("/doctor/list").get(confirmDoctorList);
 
 //user detail by userId
 router.route("/detail/:userId").get(detailByUserId);

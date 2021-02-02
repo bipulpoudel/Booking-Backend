@@ -14,7 +14,7 @@ const profileSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
+    file: {
       type: String,
     },
     user: {
