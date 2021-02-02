@@ -10,6 +10,8 @@ export const middlewaresConfig = (app) => {
     app.use(morgan("dev"));
   }
 
+  app.use(express.static("uploads"));
+
   app.use(express.json({ extended: false }));
   app.use(cors());
 };

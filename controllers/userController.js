@@ -164,7 +164,7 @@ export const doctorList = async (req, res) => {
 export const detailByUserId = async (req, res) => {
   try {
     let user = await User.findById(req.params.userId)
-      .populate("profile", ["id", "type", "about", "contact"])
+      .populate("profile", ["id", "type", "about", "contact", "file"])
       .select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
 
     res.status(200).json(user);
