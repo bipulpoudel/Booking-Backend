@@ -6,6 +6,7 @@ import { middlewaresConfig } from "./middlewares/index.js";
 /* Route imports */
 import userRoutes from "./routes/userRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import timelineRoutes from "./routes/timelineRoutes.js";
 
 /* Initialization */
 const app = express();
@@ -19,6 +20,7 @@ middlewaresConfig(app);
 /* Routes  */
 app.use("/users", userRoutes);
 app.use("/profiles", profileRoutes);
+app.use("/timelines", timelineRoutes);
 
 const PORT = process.env.PORT || 5000;
 

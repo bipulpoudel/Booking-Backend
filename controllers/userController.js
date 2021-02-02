@@ -141,8 +141,8 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// @desc    Login user
-// @route   POST /users/login
+// @desc    Verify  user
+// @route   POST /users/verify
 // @access  Public
 export const verifyUser = async (req, res) => {
   const { code } = req.params;
