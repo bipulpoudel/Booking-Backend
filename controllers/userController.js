@@ -148,7 +148,6 @@ export const doctorList = async (req, res) => {
   try {
     let doctors = await User.find({
       role: "doctor",
-      confirmed: true,
     }).select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
 
     res.status(200).json(doctors);
@@ -169,6 +168,24 @@ export const detailByUserId = async (req, res) => {
       .select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
 
     res.status(200).json(user);
+  } catch (err) {
+    return res.status(500).json({
+      errors: ["Internal Server Error"],
+    });
+  }
+};
+
+// @desc    Get all Doctors
+// @route   GET /users/doctor/list
+// @access  Public (Only access to admin)
+export const confirmDoctorList = async (req, res) => {
+  try {
+    let doctors = await User.find({
+      role: "doctor",
+      confirmed: true,
+    }).select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
+
+    res.status(200).json(doctors);
   } catch (err) {
     return res.status(500).json({
       errors: ["Internal Server Error"],
