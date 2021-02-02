@@ -148,9 +148,7 @@ export const verifyUser = async (req, res) => {
   const { code } = req.params;
 
   if (!code) {
-    return res.status(401).json({
-      errors: ["Invalid code or code expired !"],
-    });
+    return res.send("Invalid code or code expired !");
   }
 
   let user = await User.findOne({
@@ -158,9 +156,7 @@ export const verifyUser = async (req, res) => {
   });
 
   if (!user) {
-    return res.status(401).json({
-      errors: ["Invalid code or code expired !"],
-    });
+    return res.send("Invalid code or code expired !");
   }
 
   user.confirmed = true;
