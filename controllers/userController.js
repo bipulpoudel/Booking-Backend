@@ -60,7 +60,7 @@ export const registerUser = async (req, res) => {
       },
     });
 
-    sendRegisterMail(email, password.toString("hex"));
+    sendRegisterMail(email, password.toString("hex"), token.toString("hex"));
   } catch (err) {
     //yup error catch here
     if (err.errors) {
@@ -141,6 +141,37 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// @desc    Login user
+// @route   POST /users/login
+// @access  Public
+export const verifyUser = async (req, res) => {
+  const { code } = req.params;
+
+  if (!code) {
+    return res.status(401).json({
+      errors: ["Invalid code or code expired !"],
+    });
+  }
+
+  let user = await User.findOne({
+    secretToken: code,
+  });
+
+  if (!user) {
+    return res.status(401).json({
+      errors: ["Invalid code or code expired !"],
+    });
+  }
+
+  user.confirmed = true;
+
+  await user.save();
+
+  return res.redirect(
+    "https://booking-system.bipulpoudel.vercel.app/auth/login"
+  );
+};
+
 // @desc    Get all Doctors
 // @route   GET /users/doctorList
 // @access  Private (Only access to admin)
@@ -148,7 +179,9 @@ export const doctorList = async (req, res) => {
   try {
     let doctors = await User.find({
       role: "doctor",
-    }).select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
+    })
+      .populate("profile", ["type", "contact", "file"])
+      .select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
 
     res.status(200).json(doctors);
   } catch (err) {
