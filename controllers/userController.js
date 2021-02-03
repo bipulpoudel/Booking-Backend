@@ -212,7 +212,10 @@ export const confirmDoctorList = async (req, res) => {
     let doctors = await User.find({
       role: "doctor",
       confirmed: true,
-    }).select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
+    })
+      .populate("timeline", ["-createdAt", "-updatedAt", "-user"])
+      .populate("profile", ["type", "contact", "file", "about"])
+      .select(["-createdAt", "-updatedAt", "-secretToken", "-password"]);
 
     res.status(200).json(doctors);
   } catch (err) {
