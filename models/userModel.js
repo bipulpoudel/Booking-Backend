@@ -32,6 +32,10 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "profile",
     },
+    timeline: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "timeline",
+    },
   },
   {
     timestamps: true,

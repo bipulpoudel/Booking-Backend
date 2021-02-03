@@ -1,5 +1,6 @@
 //models imports
 import Timeline from "../models/timelineModel.js";
+import User from "../models/userModel.js";
 
 // @desc    Create new timeline
 // @route   POST /timelines/create
@@ -26,6 +27,12 @@ export const createTimeline = async (req, res) => {
       saturday,
       user: req.user._id,
     });
+
+    let user = await User.findById(req.user._id);
+
+    user.timeline = timeline._id;
+
+    user.save();
 
     res.status(200).json(timeline);
   } catch (err) {
