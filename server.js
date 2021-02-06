@@ -7,6 +7,7 @@ import { middlewaresConfig } from "./middlewares/index.js";
 import userRoutes from "./routes/userRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import timelineRoutes from "./routes/timelineRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 
 /* Initialization */
 const app = express();
@@ -21,6 +22,7 @@ middlewaresConfig(app);
 app.use("/users", userRoutes);
 app.use("/profiles", profileRoutes);
 app.use("/timelines", timelineRoutes);
+app.use("/booking", bookingRoutes);
 
 const PORT = process.env.PORT || 5000;
 
