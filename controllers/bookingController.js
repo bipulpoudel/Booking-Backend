@@ -65,3 +65,42 @@ export const getList = async (req, res) => {
     });
   }
 };
+
+export const updateEvent = async (req, res) => {
+  const { date, month, timeline } = req.body;
+
+  try {
+    let event = await Booking.findById(req.params.eventId);
+
+    if (!event) {
+      return res.status(400).json({
+        errors: ["Event doesn't exist'!"],
+      });
+    }
+
+    if (date) {
+      event.date = date;
+    }
+
+    if (month) {
+      event.month = month;
+    }
+
+    if (timeline) {
+      event.timeline = timeline;
+    }
+
+    await event.save();
+
+    res.status(200).json(event);
+  } catch (err) {
+    if (err.kind == "ObjectId") {
+      return res.status(400).json({
+        errors: ["Event doesn't exist'!"],
+      });
+    }
+    return res.status(500).json({
+      errors: [err.message || "Internal Server Error"],
+    });
+  }
+};
