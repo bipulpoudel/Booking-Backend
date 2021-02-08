@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { sendBookingMail, updateBookingEmail } from "../utils/sendMail.js";
 
 const bookingSchema = mongoose.Schema(
   {
@@ -23,6 +24,27 @@ const bookingSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+bookingSchema.post("save", async (data, next) => {
+  let user = JSON.parse(data.user_details);
+  let timeline = JSON.parse(data.timeline);
+
+  //send user email after save completed
+
+  sendBookingMail(user.email, data.date, data.month, timeline);
+
+  next();
+});
+
+bookingSchema.post("update", async (data, next) => {
+  let user = JSON.parse(data.user_details);
+  let timeline = JSON.parse(data.timeline);
+
+  //send user email after save completed
+  updateBookingEmail(user.email, data.date, data.month, timeline);
+
+  next();
+});
 
 const Booking = mongoose.model("booking", bookingSchema);
 
